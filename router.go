@@ -28,5 +28,6 @@ func newRouter() *echo.Echo {
 	api.GET("/user", handler.GetUserInfo)
 	api.GET("/todo", handler.GetUserTodos)
 	api.POST("/todo", handler.CreateTodo)
+
 	return e
 }
