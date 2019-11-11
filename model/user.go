@@ -6,12 +6,12 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func CreateUser(user User) {
+func CreateUser(user *User) {
 	db.Create(user)
 }
 
-func GetUser(id int) User {
+func GetUser(u User) User {
 	var user User
-	db.Where(User{ID: id}).First(&user)
+	db.Where(u).First(&user)
 	return user
 }

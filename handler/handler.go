@@ -6,7 +6,28 @@ import (
 	"net/http"
 )
 
-func GetUser(c echo.Context) error {
-	user := model.GetUser(1)
-	return c.JSON(http.StatusOK, user)
+func SignUp(c echo.Context) error {
+	user := new(model.User)
+	if err := c.Bind(user); err != nil {
+		return err
+	}
+
+	if user.Name == "" || user.Password == "" {
+		return &echo.HTTPError{
+			Code:    http.StatusBadRequest,
+			Message: "invalid name or password",
+		}
+	}
+
+	if u := model.GetUser(model.User{Name: user.Name}); u.Name == user.Name {
+		return &echo.HTTPError{
+			Code:    http.StatusConflict,
+			Message: "name already exists",
+		}
+	}
+
+	model.CreateUser(user)
+	user.Password = "****"
+
+	return c.JSON(http.StatusCreated, user)
 }

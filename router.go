@@ -16,9 +16,10 @@ func newRouter() *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Go auth API")
 	})
+	e.POST("/sign-up", handler.SignUp)
 
-	api := e.Group("/api")
-	api.GET("/user", handler.GetUser)
+	//api := e.Group("/api")
+	//api.GET("/user", handler.GetUser)
 
 	return e
 }
