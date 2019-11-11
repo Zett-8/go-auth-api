@@ -11,7 +11,7 @@ func CreateUser(user *User) {
 	db.Create(user)
 }
 
-func GetUser(u User) User {
+func GetUser(u *User) User {
 	var user User
 	db.Where(u).First(&user)
 	return user

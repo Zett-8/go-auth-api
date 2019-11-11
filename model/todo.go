@@ -11,6 +11,8 @@ func CreateTodo(todo *Todo) {
 	db.Create(todo)
 }
 
-func GetTodo(todo Todo) {
-	db.Find(todo)
+func GetTodo(t *Todo) []Todo {
+	var todos []Todo
+	db.Where(t).Find(&todos)
+	return todos
 }

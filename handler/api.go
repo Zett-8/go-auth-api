@@ -6,6 +6,18 @@ import (
 	"net/http"
 )
 
+func GetUserTodos(c echo.Context) error {
+	userId := retrieveUserIdFromToken(c)
+
+	if user := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+		return echo.ErrNotFound
+	}
+
+	todos := model.GetTodo(&model.Todo{UserID: uint(userId)})
+
+	return c.JSON(http.StatusOK, todos)
+}
+
 func CreateTodo(c echo.Context) error {
 	todo := new(model.Todo)
 	if err := c.Bind(todo); err != nil {
@@ -20,7 +32,7 @@ func CreateTodo(c echo.Context) error {
 	}
 
 	id := retrieveUserIdFromToken(c)
-	if user := model.GetUser(model.User{ID: id}); user.ID == 0 {
+	if user := model.GetUser(&model.User{ID: id}); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 

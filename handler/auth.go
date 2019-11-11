@@ -35,7 +35,7 @@ func SignUp(c echo.Context) error {
 		}
 	}
 
-	if u := model.GetUser(model.User{Name: user.Name}); u.Name == user.Name {
+	if u := model.GetUser(&model.User{Name: user.Name}); u.Name == user.Name {
 		return &echo.HTTPError{
 			Code:    http.StatusConflict,
 			Message: "name already exists",
@@ -54,7 +54,7 @@ func Login(c echo.Context) error {
 		return err
 	}
 
-	user := model.GetUser(*u)
+	user := model.GetUser(&model.User{Name: u.Name})
 	if user.Password != u.Password {
 		return &echo.HTTPError{
 			Code:    http.StatusBadRequest,
