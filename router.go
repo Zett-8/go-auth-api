@@ -18,7 +18,7 @@ func newRouter() *echo.Echo {
 	})
 
 	api := e.Group("/api")
-	api.GET("/test", handler.GetTodos)
+	api.GET("/user", handler.GetUser)
 
 	return e
 }
