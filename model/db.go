@@ -16,6 +16,7 @@ func App_db() *gorm.DB {
 	}
 
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Todo{})
 
 	return db
 }

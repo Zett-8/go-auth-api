@@ -18,7 +18,7 @@ type jwtCustomClaims struct {
 var signingKey = []byte("ktl21TyUa7")
 
 var Config = middleware.JWTConfig{
-	Claims:     jwtCustomClaims{},
+	Claims:     &jwtCustomClaims{},
 	SigningKey: signingKey,
 }
 
@@ -79,4 +79,11 @@ func Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"Token": token,
 	})
+}
+
+func retrieveUserIdFromToken(c echo.Context) int {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	id := claims.ID
+	return id
 }
