@@ -41,3 +41,11 @@ func CreateTodo(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, todo)
 }
+
+func GetUserInfo(c echo.Context) error {
+	userId := retrieveUserIdFromToken(c)
+
+	user := model.GetUser(&model.User{ID: userId})
+
+	return c.JSON(http.StatusOK, user)
+}

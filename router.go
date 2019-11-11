@@ -25,6 +25,7 @@ func newRouter() *echo.Echo {
 	api := e.Group("/api")
 	// authentication is required from here
 	api.Use(middleware.JWTWithConfig(handler.Config))
+	api.GET("/user", handler.GetUserInfo)
 	api.GET("/todo", handler.GetUserTodos)
 	api.POST("/todo", handler.CreateTodo)
 	return e
