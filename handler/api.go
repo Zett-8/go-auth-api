@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo"
 	"go-auth-api/model"
 	"net/http"
+	"strconv"
 )
 
 func GetUserTodos(c echo.Context) error {
@@ -48,4 +49,22 @@ func GetUserInfo(c echo.Context) error {
 	user := model.GetUser(&model.User{ID: userId})
 
 	return c.JSON(http.StatusOK, user)
+}
+
+func DeleteTodo(c echo.Context) error {
+	userId := retrieveUserIdFromToken(c)
+	if user := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+		return echo.ErrNotFound
+	}
+
+	todoID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.ErrNotFound
+	}
+
+	if err := model.DeleteTodo(&model.Todo{ID: todoID, UserID: uint(userId)}); err != nil {
+		return echo.ErrNotFound
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }
