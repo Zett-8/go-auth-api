@@ -9,6 +9,7 @@ import (
 
 func newRouter() *echo.Echo {
 	e := echo.New()
+	e.HTTPErrorHandler = handler.ErrorHandler
 
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Logger())
