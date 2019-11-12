@@ -13,10 +13,21 @@ func CreateTodo(todo *Todo) {
 	db.Create(todo)
 }
 
-func GetTodo(t *Todo) []Todo {
+func GetTodos(t *Todo) []Todo {
 	var todos []Todo
 	db.Where(t).Find(&todos)
 	return todos
+}
+
+func UpdateTodo(todo *Todo) error {
+	if rows := db.Model(todo).Update(map[string]interface{}{
+		"name": todo.Name,
+		"done": todo.Done,
+	}).RowsAffected; rows == 0 {
+		return fmt.Errorf("could not find %v", todo)
+	}
+
+	return nil
 }
 
 func DeleteTodo(todo *Todo) error {
