@@ -8,15 +8,15 @@ type User struct {
 }
 
 func CreateUser(user *User) {
-	db.Create(user)
+	DB.Create(user)
 }
 
 func GetUser(u *User) User {
 	var user User
 	var todos []Todo
-	db.Where(u).First(&user)
+	DB.Where(u).First(&user)
 
-	db.Where(Todo{UserID: uint(user.ID)}).Find(&todos)
+	DB.Where(Todo{UserID: uint(user.ID)}).Find(&todos)
 	user.Todos = todos
 
 	return user

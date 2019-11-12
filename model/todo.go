@@ -10,17 +10,17 @@ type Todo struct {
 }
 
 func CreateTodo(todo *Todo) {
-	db.Create(todo)
+	DB.Create(todo)
 }
 
 func GetTodos(t *Todo) []Todo {
 	var todos []Todo
-	db.Where(t).Find(&todos)
+	DB.Where(t).Find(&todos)
 	return todos
 }
 
 func UpdateTodo(todo *Todo) error {
-	if rows := db.Model(todo).Update(map[string]interface{}{
+	if rows := DB.Model(todo).Update(map[string]interface{}{
 		"name": todo.Name,
 		"done": todo.Done,
 	}).RowsAffected; rows == 0 {
@@ -31,7 +31,7 @@ func UpdateTodo(todo *Todo) error {
 }
 
 func DeleteTodo(todo *Todo) error {
-	if rows := db.Where(todo).Delete(&Todo{}).RowsAffected; rows == 0 {
+	if rows := DB.Where(todo).Delete(&Todo{}).RowsAffected; rows == 0 {
 		return fmt.Errorf("could not find %v", todo)
 	}
 
