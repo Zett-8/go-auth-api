@@ -10,15 +10,16 @@ import (
 func newRouter() *echo.Echo {
 	e := echo.New()
 
+	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	//index
+	// index
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Go auth API")
 	})
 
-	//auth
+	// user
 	e.POST("/sign-up", handler.SignUp)
 	e.POST("/login", handler.Login)
 
