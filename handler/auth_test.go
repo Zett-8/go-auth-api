@@ -1,7 +1,6 @@
 package handler
 
 import (
-	//"fmt"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -9,6 +8,17 @@ import (
 	"strings"
 	"testing"
 )
+
+func TestConnect(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+	_ = e.NewContext(req, rec)
+
+	if assert.NoError(t, nil) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+	}
+}
 
 func TestSignUp(t *testing.T) {
 	userJson := `{"name": "test", "password": "test1234"}`
