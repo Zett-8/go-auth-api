@@ -7,19 +7,19 @@ import (
 	"strconv"
 )
 
-func GetUserTodos(c echo.Context) error {
+func (h *Handler) GetUserTodos(c echo.Context) error {
 	userId := retrieveUserIdFromToken(c)
 
-	if user, _ := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: userId}, h.DB); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 
-	todos, _ := model.GetTodos(&model.Todo{UserID: uint(userId)})
+	todos, _ := model.GetTodos(&model.Todo{UserID: uint(userId)}, h.DB)
 
 	return c.JSON(http.StatusOK, todos)
 }
 
-func CreateTodo(c echo.Context) error {
+func (h *Handler) CreateTodo(c echo.Context) error {
 	todo := new(model.Todo)
 	if err := c.Bind(todo); err != nil {
 		return err
@@ -33,25 +33,25 @@ func CreateTodo(c echo.Context) error {
 	}
 
 	id := retrieveUserIdFromToken(c)
-	if user, _ := model.GetUser(&model.User{ID: id}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: id}, h.DB); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 
 	todo.UserID = uint(id)
-	model.CreateTodo(todo)
+	model.CreateTodo(todo, h.DB)
 
 	return c.JSON(http.StatusCreated, todo)
 }
 
-func GetUserInfo(c echo.Context) error {
+func (h *Handler) GetUserInfo(c echo.Context) error {
 	userId := retrieveUserIdFromToken(c)
 
-	user, _ := model.GetUser(&model.User{ID: userId})
+	user, _ := model.GetUser(&model.User{ID: userId}, h.DB)
 
 	return c.JSON(http.StatusOK, user)
 }
 
-func PutTodo(c echo.Context) error {
+func (h *Handler) PutTodo(c echo.Context) error {
 	var newTodo *model.Todo
 	err := c.Bind(&newTodo)
 	if err != nil {
@@ -59,7 +59,7 @@ func PutTodo(c echo.Context) error {
 	}
 
 	userId := retrieveUserIdFromToken(c)
-	if user, _ := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: userId}, h.DB); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 
@@ -68,7 +68,7 @@ func PutTodo(c echo.Context) error {
 		return echo.ErrNotFound
 	}
 
-	todos, _ := model.GetTodos(&model.Todo{ID: todoID, UserID: uint(userId)})
+	todos, _ := model.GetTodos(&model.Todo{ID: todoID, UserID: uint(userId)}, h.DB)
 	if len(todos) == 0 {
 		return echo.ErrNotFound
 	}
@@ -76,16 +76,16 @@ func PutTodo(c echo.Context) error {
 	todo.Name = newTodo.Name
 	todo.Done = newTodo.Done
 
-	if err := model.UpdateTodo(&todo); err != nil {
+	if err := model.UpdateTodo(&todo, h.DB); err != nil {
 		return echo.ErrNotFound
 	}
 
 	return c.JSON(http.StatusOK, todo)
 }
 
-func DeleteTodo(c echo.Context) error {
+func (h *Handler) DeleteTodo(c echo.Context) error {
 	userId := retrieveUserIdFromToken(c)
-	if user, _ := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: userId}, h.DB); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 
@@ -94,7 +94,7 @@ func DeleteTodo(c echo.Context) error {
 		return echo.ErrNotFound
 	}
 
-	if err := model.DeleteTodo(&model.Todo{ID: todoID, UserID: uint(userId)}); err != nil {
+	if err := model.DeleteTodo(&model.Todo{ID: todoID, UserID: uint(userId)}, h.DB); err != nil {
 		return echo.ErrNotFound
 	}
 

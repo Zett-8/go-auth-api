@@ -1,5 +1,9 @@
 package model
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
 type User struct {
 	ID       int    `json:"id" gorm:"primary_key auto_increment"`
 	Name     string `json:"name"`
@@ -7,27 +11,15 @@ type User struct {
 	Todos    []Todo
 }
 
-func CreateUser(user *User) error {
-	DB, err := connectDB()
-	if err != nil {
-		return err
-	}
-	defer DB.Close()
-
+func CreateUser(user *User, DB *gorm.DB) error {
 	DB.Create(user)
 
 	return nil
 }
 
-func GetUser(u *User) (User, error) {
+func GetUser(u *User, DB *gorm.DB) (User, error) {
 	var user User
 	var todos []Todo
-
-	DB, err := connectDB()
-	if err != nil {
-		return User{}, err
-	}
-	defer DB.Close()
 
 	DB.Where(u).First(&user)
 

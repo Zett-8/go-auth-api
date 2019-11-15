@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
+	"go-auth-api/model"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -21,7 +24,7 @@ func TestConnect(t *testing.T) {
 }
 
 func TestSignUp(t *testing.T) {
-	userJson := `{"name": "test4", "password": "test1234"}`
+	userJson := `{"name": "test", "password": "test1234"}`
 
 	e := NewRouter()
 	req := httptest.NewRequest(http.MethodPost, "/sign-up", strings.NewReader(userJson))
@@ -31,7 +34,21 @@ func TestSignUp(t *testing.T) {
 
 	c := e.NewContext(req, rec)
 
-	if assert.NoError(t, SignUp(c)) {
+	testDB, err := gorm.Open("sqlite3", "/tmp/test.db")
+	if err != nil {
+		t.Error()
+	}
+	defer testDB.Close()
+	testDB.AutoMigrate(&model.User{})
+	testDB.AutoMigrate(&model.Todo{})
+
+	h := &Handler{testDB}
+
+	if assert.NoError(t, h.SignUp(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
 	}
+
+	var user model.User
+	testDB.First(&user)
+	assert.Equal(t, "test", user.Name)
 }

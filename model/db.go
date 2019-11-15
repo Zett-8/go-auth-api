@@ -19,8 +19,3 @@ func Init() {
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Todo{})
 }
-
-func connectDB() (*gorm.DB, error) {
-	DB, err := gorm.Open("postgres", DBConfig)
-	return DB, err
-}

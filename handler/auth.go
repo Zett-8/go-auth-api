@@ -22,7 +22,7 @@ var Config = middleware.JWTConfig{
 	SigningKey: signingKey,
 }
 
-func SignUp(c echo.Context) error {
+func (h *Handler) SignUp(c echo.Context) error {
 	user := new(model.User)
 	if err := c.Bind(user); err != nil {
 		return err
@@ -35,14 +35,14 @@ func SignUp(c echo.Context) error {
 		}
 	}
 
-	if u, _ := model.GetUser(&model.User{Name: user.Name}); u.Name == user.Name {
+	if u, _ := model.GetUser(&model.User{Name: user.Name}, h.DB); u.Name == user.Name {
 		return &echo.HTTPError{
 			Code:    http.StatusConflict,
 			Message: "name already exists",
 		}
 	}
 
-	err := model.CreateUser(user)
+	err := model.CreateUser(user, h.DB)
 	if err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
@@ -52,13 +52,13 @@ func SignUp(c echo.Context) error {
 	return c.JSON(http.StatusCreated, user)
 }
 
-func Login(c echo.Context) error {
+func (h *Handler) Login(c echo.Context) error {
 	u := new(model.User)
 	if err := c.Bind(u); err != nil {
 		return err
 	}
 
-	user, _ := model.GetUser(&model.User{Name: u.Name})
+	user, _ := model.GetUser(&model.User{Name: u.Name}, h.DB)
 	if user.Password != u.Password {
 		return &echo.HTTPError{
 			Code:    http.StatusBadRequest,
