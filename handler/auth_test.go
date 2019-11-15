@@ -21,9 +21,9 @@ func TestConnect(t *testing.T) {
 }
 
 func TestSignUp(t *testing.T) {
-	userJson := `{"name": "test2", "password": "test1234"}`
+	userJson := `{"name": "test4", "password": "test1234"}`
 
-	e := echo.New()
+	e := NewRouter()
 	req := httptest.NewRequest(http.MethodPost, "/sign-up", strings.NewReader(userJson))
 	req.Header.Set("Content-Type", "application/json")
 
