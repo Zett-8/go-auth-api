@@ -10,11 +10,11 @@ import (
 func GetUserTodos(c echo.Context) error {
 	userId := retrieveUserIdFromToken(c)
 
-	if user := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 
-	todos := model.GetTodos(&model.Todo{UserID: uint(userId)})
+	todos, _ := model.GetTodos(&model.Todo{UserID: uint(userId)})
 
 	return c.JSON(http.StatusOK, todos)
 }
@@ -33,7 +33,7 @@ func CreateTodo(c echo.Context) error {
 	}
 
 	id := retrieveUserIdFromToken(c)
-	if user := model.GetUser(&model.User{ID: id}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: id}); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 
@@ -46,7 +46,7 @@ func CreateTodo(c echo.Context) error {
 func GetUserInfo(c echo.Context) error {
 	userId := retrieveUserIdFromToken(c)
 
-	user := model.GetUser(&model.User{ID: userId})
+	user, _ := model.GetUser(&model.User{ID: userId})
 
 	return c.JSON(http.StatusOK, user)
 }
@@ -59,7 +59,7 @@ func PutTodo(c echo.Context) error {
 	}
 
 	userId := retrieveUserIdFromToken(c)
-	if user := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 
@@ -68,7 +68,7 @@ func PutTodo(c echo.Context) error {
 		return echo.ErrNotFound
 	}
 
-	todos := model.GetTodos(&model.Todo{ID: todoID, UserID: uint(userId)})
+	todos, _ := model.GetTodos(&model.Todo{ID: todoID, UserID: uint(userId)})
 	if len(todos) == 0 {
 		return echo.ErrNotFound
 	}
@@ -85,7 +85,7 @@ func PutTodo(c echo.Context) error {
 
 func DeleteTodo(c echo.Context) error {
 	userId := retrieveUserIdFromToken(c)
-	if user := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
+	if user, _ := model.GetUser(&model.User{ID: userId}); user.ID == 0 {
 		return echo.ErrNotFound
 	}
 

@@ -9,17 +9,38 @@ type Todo struct {
 	UserID uint   `json:"user_id"`
 }
 
-func CreateTodo(todo *Todo) {
+func CreateTodo(todo *Todo) error {
+	DB, err := connectDB()
+	if err != nil {
+		return err
+	}
+	defer DB.Close()
+
 	DB.Create(todo)
+
+	return nil
 }
 
-func GetTodos(t *Todo) []Todo {
+func GetTodos(t *Todo) ([]Todo, error) {
 	var todos []Todo
+
+	DB, err := connectDB()
+	if err != nil {
+		return []Todo{}, err
+	}
+	defer DB.Close()
+
 	DB.Where(t).Find(&todos)
-	return todos
+	return todos, nil
 }
 
 func UpdateTodo(todo *Todo) error {
+	DB, err := connectDB()
+	if err != nil {
+		return err
+	}
+	defer DB.Close()
+
 	if rows := DB.Model(todo).Update(map[string]interface{}{
 		"name": todo.Name,
 		"done": todo.Done,
@@ -31,6 +52,12 @@ func UpdateTodo(todo *Todo) error {
 }
 
 func DeleteTodo(todo *Todo) error {
+	DB, err := connectDB()
+	if err != nil {
+		return err
+	}
+	defer DB.Close()
+
 	if rows := DB.Where(todo).Delete(&Todo{}).RowsAffected; rows == 0 {
 		return fmt.Errorf("could not find %v", todo)
 	}

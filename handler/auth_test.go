@@ -16,12 +16,12 @@ func TestConnect(t *testing.T) {
 	_ = e.NewContext(req, rec)
 
 	if assert.NoError(t, nil) {
-		assert.Equal(t, http.StatusBadRequest, rec.Code)
+		assert.Equal(t, http.StatusOK, rec.Code)
 	}
 }
 
 func TestSignUp(t *testing.T) {
-	userJson := `{"name": "test", "password": "test1234"}`
+	userJson := `{"name": "test2", "password": "test1234"}`
 
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodPost, "/sign-up", strings.NewReader(userJson))

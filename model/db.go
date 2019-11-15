@@ -5,17 +5,22 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-var DB *gorm.DB
+var DBConfig = "host=db port=5432 user=postgres dbname=app password=postgres sslmode=disable"
 
 func Init() {
-	var err error
-
-	DB, err = gorm.Open("postgres", "host=db port=5432 user=postgres dbname=app password=postgres sslmode=disable")
+	DB, err := gorm.Open("postgres", DBConfig)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
+	defer DB.Close()
+
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Todo{})
+}
+
+func connectDB() (*gorm.DB, error) {
+	DB, err := gorm.Open("postgres", DBConfig)
+	return DB, err
 }
